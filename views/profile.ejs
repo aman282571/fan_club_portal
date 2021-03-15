@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/cssfiles/profile.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
+</head>
+<body> 
+   
+    <header><a href="/logout">Log out</a></header>
+    <div class="container">
+        
+        <div class="incontainer">
+        <div class="profile">    
+            <div class="info">  
+              
+             <h2><div class="image"> <img  alt=""> <label for="profilepic"> <i class="fas fa-camera"></i></label></div><span id="name">Aman</span>
+             </h2>
+             <h3>Hobbies</h3>
+             <div class="ul">
+              </div>
+        </div>
+          <div class="enter">
+           <input type="text" id="enterhobby" placeholder="enter your hobbies..."><input type="submit"  id='submit' value="Add">
+        </div>
+       </div>
+
+       <div class="following">
+           <h2>Followings</h2>
+          <ul>
+           
+         </ul> 
+        </div>
+        
+    </div>
+    <footer class="bttn">
+        <a href="/createroom">Create new room</a> <a href="/leaderboard">Leaderboard</a><a href="/followothers">Follow others</a>
+        
+    </footer>
+</div>
+<form action="" id="profilepicform"name="profilepicform" enctype="multipart/form-data">
+    <input type="file" id="profilepic" name="profilepic">
+    <input type="submit">
+
+</form>
+</body>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" ></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.9.6/qs.min.js" integrity="sha512-3TmPrquYLaAsUmZKXRARTDC5siWhLAdBVqNo4dWpDABBtLU62AaoTaQJEvjxjExcZYurO6i1dnK85k8pPIBlRg==" crossorigin="anonymous"></script>
+<script>
+    const { userid } = Qs.parse(location.search, {
+		ignoreQueryPrefix: true,
+	});
+   
+    admin='<%- JSON.stringify(admin) %>'
+    admin=JSON.parse(admin)
+    console.log(admin)
+   
+    showprofile()
+    
+  function displayrooms(room,id){
+    roomlink=`/showchatroom?roomid=${room.roomid}&adminid=${id}`
+    $('.following ul').append(`<a href=${roomlink}> <li> <i class="fas fa-users"></i> ${room.name} </li></a>`)
+  }
+ function displayimage(userdata){
+     if(userdata.img)
+     $('img').attr('src',`/upload/${userdata.img}`)
+      
+ }
+ function displayhobbies(hobby){
+    $('.info .ul .no_hobby').remove()
+    $('.info .ul').append(`  <li id=li_${hobby._id}> <p>${hobby.data} </p><button id=${hobby._id}>Delete</button></li>`)
+
+   //--------------------------------deleting hobby-------------------------------
+    $(`#${hobby._id}`).click(()=>{
+        fetch(`/deletehobby?hobby_id=${hobby._id}&userid=${userid}`,{method:'delete'}).then((response)=>{
+            return response.json()
+        }).then((result)=>{
+            if(result=='success')
+            $(`#li_${hobby._id}`).remove()
+        })
+    })
+ }
+
+    function showprofile(){
+     
+    fetch(`/getuserdata/${userid}`).then((response)=>{
+        return response.json() 
+    }).then((userdata)=>{
+        console.log(userdata)
+        console.log(userdata.googleid)
+        console.log(userdata.tr)
+        //--------displaying name-----------
+        $('#name').html(`${userdata.name}`)
+        if(!userdata.rooms.length){
+            $('.following ul').append(` <li class='no_following'> No followings yet </li>`)
+        }
+        userdata.rooms.forEach((room)=>{
+             //--------displaying rooms-----------
+            displayrooms(room,userdata._id)
+           
+        })
+         //--------displaying image-----------
+           displayimage(userdata)
+            if(!userdata.hobbies.length){
+                $('.info .ul').append(`<li class="no_hobby">No hobbies yet,add your hobbies</li>`)
+            }
+           userdata.hobbies.forEach((hobby)=>{
+                  //--------displaying hobbies-----------
+                displayhobbies(hobby)
+               
+            })
+             
+               //--------adding hobbies-----------
+            $('#submit').click(()=>{
+                data=$('#enterhobby').val()
+                $('#enterhobby').val('')
+                
+                if(data.trim().length)
+                {  
+            
+                    fetch(`/addhobby?userid=${userdata._id}&data=${data}`,{method:'put'}).then((response)=>{
+                        return response.json()
+                    }).then((user)=>{
+                        if(user)
+                        { 
+                           newhobby= user.hobbies[ user.hobbies.length-1]
+                            displayhobbies(newhobby)
+                        }
+                    })
+                
+                   
+             }
+            })
+            //--------profilepic---------------
+            $('#profilepic').change(() => {
+                fetch(`/changephoto?userid=${userdata._id}`, {
+                    method: 'post',
+                    body: new FormData(profilepicform),
+                })
+                    .then((response) => {
+                        return response.json();
+                    })
+                    .then((user) => {
+                        if (user) {
+                            console.log('profile pic changed');
+                            displayimage(user)
+                           
+                        }
+                    });
+            });
+            if(!admin)
+            {
+                     $('.following ul a').attr('href','#')
+                      $('#submit').off()
+                      $('button').off()
+                      $('.fa-camera').remove()
+
+           }
+        }
+    )} 
+
+     
+  
+</script>
+
+</html>

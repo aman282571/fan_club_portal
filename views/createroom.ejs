@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    
+  </head>
+  <link rel="stylesheet" href="../cssfiles/createroom.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
+
+<body>
+   
+       
+    <form action="/roomcreated" method="post">
+        <div class='icon'>
+        <i class="fas fa-users fa-5x "></i>
+        </div>
+         <h3>Create New Room</h3>
+     <% if(typeof(error)!='undefined'){ %> <p class="err"> <%=error%></p> <%}%>
+     <div class="enter1">
+      <h4> Room<p >(should be unique)</p></h4>
+      <input type="text" name='roomname' value="" required="required" placeholder="Enter Room Name">
+    </div>
+    <div class="enter2">
+      <h4> Description</h4>
+      <textarea name="desc"  style="resize: none;" rows="5" required="required" placeholder="Enter Description"></textarea>
+    
+    </div>
+       <input type="submit" value="Create">
+     
+    </form>
+  
+
+
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
+
+<link rel="stylesheet" href="/cssfiles/allrooms.css">
+<body>
+    <div class="container">
+        <h1>Follow your favourite clubs !!</h1>
+        <div class="clubs">
+          
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" ></script>
+    <script>
+        
+        $(document).ready(()=>{
+     
+                fetch('/clubs').then((response)=>{
+                    return response.json()
+                }).then((data)=>{
+                    
+                    data.rooms.forEach((room)=>{ 
+                        count=0
+                        room.users.forEach((user)=>{
+                            //-----------displaying club--------------------
+                            if(user.id==data.userid){
+                              $('.clubs').append(`<div> <p class="clubname">  <i class="fas fa-users"></i> ${room.roomname}</p>  <p id=follow class= ${room._id}>Unfollow</p> </div>`)
+                             count++
+                           
+                            }
+                           
+                        })  
+                      
+                        if(count==0){
+                            $('.clubs').append(`<div> <p class="clubname">  <i class="fas fa-users"></i> ${room.roomname}</p>  <p id=follow class= ${room._id}>Follow</p> </div>`)
+                         
+                        }
+                      //------------------following and unfollowing club-----------------
+                        $(`.${room._id}`).click(()=>{
+                            if($(`.${room._id}`).text()=='Follow')
+                            {
+                            fetch(`/followclub?roomid=${room._id}&userid=${data.userid}`).then((response)=>{
+                                return response.json()
+                            }).then((result)=>{
+                                if(result=='success'){
+                                    alert("Club has been added to your following list you can join it from there..!!")
+                                    $(`.${room._id}`).text('Unfollow')
+                                  
+                                }
+                            })
+                        }
+                            else if($(`.${room._id}`).text()=='Unfollow')
+                        {
+                              //verfying that user isonly admin of room
+                              admin_count=0
+                              let isadmin=null
+                              room.users.forEach((user)=>{
+                                     if(user.admin==true)
+                                     admin_count++;
+                              })
+                              room.users.forEach((user)=>{
+                                  if(user.id==data.userid && user.admin==true)
+                                  isadmin='yes'
+                              })
+                              if(!isadmin){
+                                fetch(`/unfollowclub?roomid=${room._id}&userid=${data.userid}`).then((response)=>{
+                                    return response.json()
+                                }).then((result)=>{
+                                    if(result=='success'){
+                                        alert("Club has been Unfollowed")
+                                        $(`.${room._id}`).text('Follow')
+                 
+                                    }
+                                })
+                              }
+                             else if(isadmin && admin_count>1)
+                              {
+                                fetch(`/unfollowclub?roomid=${room._id}&userid=${data.userid}`).then((response)=>{
+                                    return response.json()
+                                }).then((result)=>{
+                                    if(result=='success'){
+                                        alert("Club has been Unfollowed")
+                                        $(`.${room._id}`).text('Follow')
+                 
+                                    }
+                                })
+                              }
+                              else if (isadmin && admin_count==1)
+                              {
+                                alert('you are the only admin of this room so you can not unfollow this...')
+                              }
+                             
+                         
+                        
+                    }
+                    }
+                        )
+                        })
+
+                })
+          
+        })
+        
+
+
+    </script>
+</body>
+</html>

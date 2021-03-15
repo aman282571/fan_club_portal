@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> 
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content=" width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/cssfiles/index.css">
+   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.1/css/all.css" integrity="sha384-vp86vTRFVJgpjF9jiIGPEEqYqlDwgyBgEF109VFjmqGmIY/Y4HV4d3Gp2irVfcrp" crossorigin="anonymous">
+</head>
+<body>
+    
+    <form method="POST" action="/register" >
+        <div class='icon'>  
+        <i class="fas fa-user fa-5x "></i>
+        </div>
+         <h3>Sign Up</h3>
+        <% if(typeof(error)!='undefined'){ %> <p class="err"> <%=error%></p> <%}%>
+     <div class="enter1">
+      <h4> Username  <p >(should be unique)</p></h4>
+      <input type="text" name='name' value="" required="required" placeholder="Enter name">
+    </div>
+    <div class="enter2">
+      <h4>  Password</h4>
+      <input type="password" name='password' value='' required="required" placeholder="Enter password">
+    </div>
+    <div class="enter3">
+      <h4>  Email</h4>
+      <input type="email" name='email' value="" required="required" placeholder="Enter email">
+    </div>
+       <input type="submit" value="Register">
+      <p class="bottom"> Already a user? <a href="/login"> Log In</a></p>
+    </form>
+    
+
+</body>
+</html>

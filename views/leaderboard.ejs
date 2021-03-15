@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/cssfiles/leaderboard.css">
+</head>
+<body>
+    <h1>Leaderboard</h1>
+    <div class="users">
+     
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js" ></script>
+<script>
+    fetch('/users').then((response)=>{
+        return response.json()
+    }).then((users)=>{
+        users.sort((x,y)=>{
+            return x.countmsgs-y.countmsgs
+        }).reverse()
+        i=1
+        users.forEach((user)=>{
+            $('.users').append(`<div>
+                <p id="rank">${i}</p>
+                <a href=/profile?userid=${user._id}>${user.name}</a>  
+                <p id="count">Msg. Count : ${user.countmsgs}</p>                                                                             
+            </div>`)
+            i++
+        })
+    })
+</script>
+</html>
