@@ -7,7 +7,7 @@ Requirement=>node should be installed on your laptop(npm comes with node).
 4. Now you can see fan_club_portal folder in cloneHere folder.
 5. Open that folder in vscode on any other code editor.
 6. Open the integrated terminal and run the npm install command to install all dependencies.
-7. After installing dependencies run the server using (nodemon server) command.
+7. After installing dependencies run the server using(node server) or install nodemon and run(nodemon server)command.
 8. Go to your favourite browser and type (http://localhost:3000).
 
 That's it.
